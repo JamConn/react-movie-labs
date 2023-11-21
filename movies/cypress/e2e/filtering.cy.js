@@ -56,6 +56,24 @@ describe("Filtering", () => {
     });
   });
   describe("Combined genre and title", () => {
-    // TODO
+    it("show movies with the specified text in the title and the selected genre", () => {
+      const searchString = "b";
+      const selectedGenreId = 35;
+      const selectedGenreText = "Comedy";
+      const matchingMovies = filterByTitle(
+        filterByGenre(movies, selectedGenreId),
+        searchString
+      );
+      cy.get("#filled-search").clear().type(searchString);
+      cy.get("#genre-select").click();
+      cy.get("li").contains(selectedGenreText).click();
+      cy.get(".MuiCardHeader-content").should(
+        "have.length",
+        matchingMovies.length
+      );
+      cy.get(".MuiCardHeader-content").each(($card, index) => {
+        cy.wrap($card).find("p").contains(matchingMovies[index].title);
+      });
+    });
   });
 });
